@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Bank;
 use Illuminate\Http\Request;
 
 class BankController extends Controller
@@ -43,7 +44,12 @@ class BankController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $bank = new Bank;
+        $bank->name = $request->name;
+
+        $bank->save();
+        
+        return response()->json(["error" => ""],200);
     }
 
     /**
@@ -52,9 +58,10 @@ class BankController extends Controller
      * @param  \App\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function show(Transaction $transaction)
+    public function show()
     {
-        //
+        $bank = Bank::orderBy('id', 'desc')->get();
+        return response()->json($bank);
     }
 
     /**

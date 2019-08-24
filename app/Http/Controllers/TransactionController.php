@@ -44,7 +44,14 @@ class TransactionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $transaction = new Transaction;
+        $transaction->description = $request->description;
+        $transaction->type = $request->type;
+        $transaction->status = $request->status;
+        $transaction->value = $request->value;
+        $transaction->user_id = $request->user_id;
+
+        $transaction->save();
     }
 
     /**
@@ -53,9 +60,10 @@ class TransactionController extends Controller
      * @param  \App\Transaction  $transaction
      * @return \Illuminate\Http\Response
      */
-    public function show(Transaction $transaction)
+    public function show()
     {
-        //
+        $transaction = Transaction::orderBy('id', 'desc')->get();
+        return response()->json($transaction);
     }
 
     /**

@@ -47,7 +47,14 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User;
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = $request->password;
+        $user->bank_id = $request->bank_id;
+        $user->save();
+
+        return response()->json(["error" => ""],200);
     }
 
     public function show()

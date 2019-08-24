@@ -9,6 +9,9 @@
                         <input type="text" v-model="user.name" placeholder="Nome" class="form-control">
                     </div>
                     <div class="col-12 form-group">
+                        <input type="text" v-model="user.email" placeholder="E-mail" class="form-control">
+                    </div>
+                    <div class="col-12 form-group">
                         <input type="button" @click="store" class="btn btn-primary" value="Gravar">
                     </div>
                 </div>
@@ -29,7 +32,8 @@
         },
         data: () => ({
             user:{
-                name: ''
+                name: '',
+                email:''
             }
         }),
         methods: {

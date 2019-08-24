@@ -19,6 +19,12 @@ $router->group(
         $router->group(['prefix' => 'account'], function() use ($router) {
             $router->get('/','AccountController@show');
         });
+        $router->group(['prefix' => 'bank'], function() use ($router) {
+            $router->get('/','BankController@show');
+        });
+        $router->group(['prefix' => 'transaction'], function() use ($router) {
+            $router->get('/','TransactionController@show');
+        });
     }
 );
 
