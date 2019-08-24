@@ -17,4 +17,13 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+$router->group(
+    ['middleware' => 'auth'], 
+    function() use ($router) {
+        $router->get('/home','HomeController@index')->name('home');
+        $router->group(['prefix' => 'config'], function() use ($router) {
+            
+        });
+    }
+);
+
