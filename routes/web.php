@@ -20,7 +20,10 @@ Auth::routes();
 $router->group(
     ['middleware' => 'auth'], 
     function() use ($router) {
-        $router->get('/home','HomeController@index')->name('home');
+        $router->get('/dashboard','DashboardController@index')->name('dashboard');
+        $router->get('/account','AccountController@index')->name('account');
+        $router->get('/bank','BankController@index')->name('bank');
+        $router->get('/transaction','TransactionController@index')->name('transaction');
         $router->group(['prefix' => 'config'], function() use ($router) {
             
         });
