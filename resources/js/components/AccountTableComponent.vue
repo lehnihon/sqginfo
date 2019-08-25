@@ -45,6 +45,7 @@
                         .then(response => {
                             this.getUsers();
                         }).catch(error =>{
+                            alert('Erro ao deletar');
                         }).finally(() => {
                         })
                 }

@@ -1896,7 +1896,9 @@ __webpack_require__.r(__webpack_exports__);
           }
         }).then(function (response) {
           _this.getUsers();
-        })["catch"](function (error) {})["finally"](function () {});
+        })["catch"](function (error) {
+          alert('Erro ao deletar');
+        })["finally"](function () {});
       }
     },
     getUsers: function getUsers() {
