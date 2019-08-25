@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Transaction;
 use Illuminate\Http\Request;
 
@@ -36,67 +37,81 @@ class TransactionController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
+        $user = User::find($request->user_id);
+
         $transaction = new Transaction;
         $transaction->description = $request->description;
-        $transaction->type = $request->type;
         $transaction->status = $request->status;
         $transaction->value = $request->value;
         $transaction->user_id = $request->user_id;
-
+        if($request->status == 'P'){
+            $amount = $user->amount-$request->value;
+            $transaction->type == 'D';
+            $transaction->amount_before = $user->amount;
+            $transaction->amount_after = $amount;
+            $user->amount = $amount;
+            $user->save();
+        }elseif($request->status == 'R'){
+            $amount = $user->amount+$request->value;
+            $transaction->type == 'R';
+            $transaction->amount_before = $user->amount;
+            $transaction->amount_after = $amount;
+            $user->amount = $amount;
+            $user->save();
+        }else{
+            $request->type == '';
+        }
         $transaction->save();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
     public function show()
     {
         $transaction = Transaction::orderBy('id', 'desc')->get();
         return response()->json($transaction);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Transaction $transaction)
+    public function edit($id)
     {
-        //
+        $transaction = Transaction::find($id);
+        return response()->json($transaction);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Transaction $transaction)
+    public function update(Request $request)
     {
-        //
+        $transaction = Transaction::find($request->id);
+        $user = User::find($transaction->user_id);
+
+        $transaction->description = $request->description;
+        $transaction->status = $request->status;
+        $transaction->value = $request->value;
+        $transaction->user_id = $request->user_id;
+        if($request->status == 'P'){
+            $amount = $user->amount-$request->value;
+            $transaction->type == 'D';
+            $transaction->amount_before = $user->amount;
+            $transaction->amount_after = $amount;
+            $user->amount = $amount;
+            $user->save();
+        }elseif($request->status == 'R'){
+            $amount = $user->amount+$request->value;
+            $transaction->type == 'R';
+            $transaction->amount_before = $user->amount;
+            $transaction->amount_after = $amount;
+            $user->amount = $amount;
+            $user->save();
+        }else{
+            $request->type == '';
+        }
+        $transaction->save();
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaction $transaction)
+    public function destroy($id)
     {
-        //
+        if(!empty($id)){
+            $transaction = Transaction::find($id);
+            $transaction->delete();
+        }
     }
 }

@@ -87,14 +87,11 @@ class BankController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaction $transaction)
+    public function destroy($id)
     {
-        //
+        if(!empty($id)){
+            $bank = Bank::find($id);
+            $bank->delete();
+        }
     }
 }

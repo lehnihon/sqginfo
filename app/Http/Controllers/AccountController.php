@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -39,12 +40,6 @@ class AccountController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $user = new User;
@@ -86,14 +81,17 @@ class AccountController extends Controller
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Transaction  $transaction
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Transaction $transaction)
+    public function destroy($id)
     {
-        //
+        if(!empty($id)){
+            $transaction = Transaction::where('user_id',$id)->count();
+            if(!$transaction){
+                $user = User::find($id);
+                $user->delete();
+                return response()->json(["error" => ""],200);
+            }else{
+                return response()->json(["error" => "Esse usuário tem transações ativas"],400);
+            }
+        }
     }
 }
