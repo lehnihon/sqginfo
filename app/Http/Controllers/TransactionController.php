@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\User;
 use App\Transaction;
 use Illuminate\Http\Request;
@@ -24,7 +25,9 @@ class TransactionController extends Controller
      */
     public function index()
     {
-        return view('transaction');
+        return view('transaction',[
+            'api_token' => (Auth::user()) ? Auth::user()->api_token : null
+        ]);
     }
 
     /**

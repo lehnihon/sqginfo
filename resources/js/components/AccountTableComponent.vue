@@ -12,6 +12,7 @@
                                 <th scope="col">Nome</th>
                                 <th scope="col">E-mail</th>
                                 <th scope="col">Saldo</th>
+                                <th scope="col">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -20,6 +21,7 @@
                                 <td>{{user.name}}</td>
                                 <td>{{user.email}}</td>
                                 <td>{{formatPrice(user.amount)}}</td>
+                                <td><button class="btn" @click="destroy(user.id)">Deletar</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -37,8 +39,18 @@
             users:[]
         }),
         methods: {
+            destroy(id){
+                if(confirm("Tem certeza que quer deletar?")){
+                    axios.delete(process.env.MIX_APP_URL+"/account/"+id,{ headers: {'Authorization': "Bearer "+window.api_token}})
+                        .then(response => {
+                            this.getUsers();
+                        }).catch(error =>{
+                        }).finally(() => {
+                        })
+                }
+            },
             getUsers(){
-                axios.get(process.env.MIX_APP_URL+"/account",{ headers: {'Authorization': "Bearer 3q9TgyjiDpNel6rWxVAn4BPAgTe6zptEpWYIh9rexVTcPHabUQMCzpPtnxkC"}})
+                axios.get(process.env.MIX_APP_URL+"/account",{ headers: {'Authorization': "Bearer "+window.api_token}})
                     .then(response => {
                         this.users = response.data
                     }).catch(error =>{

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Bank;
 use Illuminate\Http\Request;
 
@@ -23,7 +24,9 @@ class BankController extends Controller
      */
     public function index()
     {
-        return view('bank');
+        return view('bank',[
+            'api_token' => (Auth::user()) ? Auth::user()->api_token : null
+        ]);
     }
 
     /**

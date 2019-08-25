@@ -1724,6 +1724,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1732,24 +1744,64 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
+      msg: '',
+      msg_color: 'alert alert-success',
+      disabled: 0,
+      banks: [],
+      componentUpdate: 0,
       user: {
         name: '',
-        email: ''
+        email: '',
+        password: '',
+        bank_id: 0
       }
     };
   },
   methods: {
     store: function store() {
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://localhost/sqginfo/public/api" + "/account", {
+      var _this = this;
+
+      this.disabled = 1;
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("http://localhost/sqginfo/public/api" + "/account", this.user, {
         headers: {
-          'Authorization': "Bearer 3q9TgyjiDpNel6rWxVAn4BPAgTe6zptEpWYIh9rexVTcPHabUQMCzpPtnxkC"
+          'Authorization': "Bearer " + window.api_token
         }
       }).then(function (response) {
-        console.log(response.data);
+        _this.msg_color = "alert alert-success";
+        _this.msg = "Conta cadastrada com sucesso!";
+
+        _this.clearForm();
+
+        _this.componentUpdate += 1;
+      })["catch"](function (error) {
+        _this.msg_color = "alert alert-danger";
+        _this.msg = "Erro ao cadastrar";
+      })["finally"](function () {
+        _this.disabled = 0;
+      });
+    },
+    getBanks: function getBanks() {
+      var _this2 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://localhost/sqginfo/public/api" + "/bank", {
+        headers: {
+          'Authorization': "Bearer " + window.api_token
+        }
+      }).then(function (response) {
+        _this2.banks = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    clearForm: function clearForm() {
+      this.user.name = '';
+      this.user.email = '';
+      this.user.password = '';
+      this.user.bank_id = 0;
     }
+  },
+  mounted: function mounted() {
+    this.getBanks();
   }
 });
 
@@ -1797,6 +1849,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1805,15 +1859,28 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    getUsers: function getUsers() {
+    destroy: function destroy(id) {
       var _this = this;
+
+      if (confirm("Tem certeza que quer deletar?")) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("http://localhost/sqginfo/public/api" + "/account/" + id, {
+          headers: {
+            'Authorization': "Bearer " + window.api_token
+          }
+        }).then(function (response) {
+          _this.getUsers();
+        })["catch"](function (error) {})["finally"](function () {});
+      }
+    },
+    getUsers: function getUsers() {
+      var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://localhost/sqginfo/public/api" + "/account", {
         headers: {
-          'Authorization': "Bearer 3q9TgyjiDpNel6rWxVAn4BPAgTe6zptEpWYIh9rexVTcPHabUQMCzpPtnxkC"
+          'Authorization': "Bearer " + window.api_token
         }
       }).then(function (response) {
-        _this.users = response.data;
+        _this2.users = response.data;
       })["catch"](function (error) {
         console.log(error);
       });
@@ -37209,6 +37276,12 @@ var render = function() {
   return _c(
     "div",
     [
+      _vm.msg
+        ? _c("div", { class: _vm.msg_color, attrs: { role: "alert" } }, [
+            _vm._v("\n        " + _vm._s(_vm.msg) + "\n    ")
+          ])
+        : _vm._e(),
+      _vm._v(" "),
       _c("div", { staticClass: "card" }, [
         _c("div", { staticClass: "card-header" }, [
           _vm._v("Cadastro de Conta")
@@ -37266,8 +37339,87 @@ var render = function() {
             _vm._v(" "),
             _c("div", { staticClass: "col-12 form-group" }, [
               _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.user.password,
+                    expression: "user.password"
+                  }
+                ],
+                staticClass: "form-control",
+                attrs: { type: "password", placeholder: "Senha" },
+                domProps: { value: _vm.user.password },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.user, "password", $event.target.value)
+                  }
+                }
+              })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-12 form-group" }, [
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.bank_id,
+                      expression: "user.bank_id"
+                    }
+                  ],
+                  staticClass: "form-control",
+                  attrs: { id: "banks" },
+                  on: {
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.user,
+                        "bank_id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
+                    }
+                  }
+                },
+                [
+                  _c("option", { attrs: { value: "0" } }, [
+                    _vm._v("Selecione um Banco")
+                  ]),
+                  _vm._v(" "),
+                  _vm._l(_vm.banks, function(bank) {
+                    return _c(
+                      "option",
+                      { key: bank.id, domProps: { value: bank.id } },
+                      [_vm._v(_vm._s(bank.name))]
+                    )
+                  })
+                ],
+                2
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "col-12 form-group" }, [
+              _c("input", {
                 staticClass: "btn btn-primary",
-                attrs: { type: "button", value: "Gravar" },
+                attrs: {
+                  disabled: _vm.disabled == 1,
+                  type: "button",
+                  value: "Gravar"
+                },
                 on: { click: _vm.store }
               })
             ])
@@ -37275,7 +37427,7 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("AccountTable")
+      _c("AccountTable", { key: _vm.componentUpdate })
     ],
     1
   )
@@ -37323,7 +37475,22 @@ var render = function() {
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(user.email))]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(_vm.formatPrice(user.amount)))])
+                  _c("td", [_vm._v(_vm._s(_vm.formatPrice(user.amount)))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn",
+                        on: {
+                          click: function($event) {
+                            return _vm.destroy(user.id)
+                          }
+                        }
+                      },
+                      [_vm._v("Deletar")]
+                    )
+                  ])
                 ])
               }),
               0
@@ -37347,7 +37514,9 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { scope: "col" } }, [_vm._v("E-mail")]),
         _vm._v(" "),
-        _c("th", { attrs: { scope: "col" } }, [_vm._v("Saldo")])
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Saldo")]),
+        _vm._v(" "),
+        _c("th", { attrs: { scope: "col" } }, [_vm._v("Ações")])
       ])
     ])
   }

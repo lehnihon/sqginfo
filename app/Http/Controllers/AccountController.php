@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\User;
 use App\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,7 +29,9 @@ class AccountController extends Controller
      */
     public function index()
     {
-        return view('account');
+        return view('account',[
+            'api_token' => (Auth::user()) ? Auth::user()->api_token : null
+        ]);
     }
 
     /**
@@ -45,8 +49,9 @@ class AccountController extends Controller
         $user = new User;
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = $request->password;
+        $user->password = Hash::make($request->password);
         $user->bank_id = $request->bank_id;
+        $user->api_token = Str::random(60);
         $user->save();
 
         return response()->json(["error" => ""],200);
