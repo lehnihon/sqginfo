@@ -120,6 +120,9 @@
                 if(this.transaction.value == ''){
                     msg_error+="Valor é obrigatório <br>";
                 }
+                if(!this.isNumber(this.transaction.value)){
+                    msg_error+="Valor não é válido<br>";
+                }
                 if(this.transaction.user_id == ''){
                     msg_error+="Selecione uma conta <br>";
                 }
@@ -135,6 +138,9 @@
                 this.transaction = transaction
                 this.btnMsg ="Atualizar"
                 this.headerTransaction = "Atualização de Transação: #"+transaction.id
+            },
+            isNumber(n){
+                return !isNaN(parseFloat(n)) && isFinite(n);
             }
         },
         mounted(){

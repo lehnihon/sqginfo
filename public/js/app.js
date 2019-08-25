@@ -2307,6 +2307,10 @@ __webpack_require__.r(__webpack_exports__);
         msg_error += "Valor é obrigatório <br>";
       }
 
+      if (!this.isNumber(this.transaction.value)) {
+        msg_error += "Valor não é válido<br>";
+      }
+
       if (this.transaction.user_id == '') {
         msg_error += "Selecione uma conta <br>";
       }
@@ -2323,6 +2327,9 @@ __webpack_require__.r(__webpack_exports__);
       this.transaction = transaction;
       this.btnMsg = "Atualizar";
       this.headerTransaction = "Atualização de Transação: #" + transaction.id;
+    },
+    isNumber: function isNumber(n) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
     }
   },
   mounted: function mounted() {
