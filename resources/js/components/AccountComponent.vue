@@ -1,7 +1,6 @@
 <template>
     <div>
-        <div v-if="msg" :class="msg_color" role="alert">
-            {{msg}}
+        <div v-if="msg" :class="msg_color" role="alert" v-html="msg">
         </div>
         <div class="card">
             <div class="card-header">Cadastro de Conta</div>
@@ -12,7 +11,7 @@
                         <input type="text" v-model="user.name" placeholder="Nome" class="form-control">
                     </div>
                     <div class="col-12 form-group">
-                        <input type="text" v-model="user.email" placeholder="E-mail" class="form-control">
+                        <input type="email" v-model="user.email" placeholder="E-mail" class="form-control">
                     </div>
                     <div class="col-12 form-group">
                         <input type="password" v-model="user.password" placeholder="Senha" class="form-control">
@@ -58,19 +57,24 @@
         methods: {
             store(){
                 this.disabled = 1;
-                
-                axios.post(process.env.MIX_APP_URL+"/account",this.user,{ headers: {'Authorization': "Bearer "+window.api_token}})
-                    .then(response => {
-                        this.msg_color ="alert alert-success";
-                        this.msg = "Conta cadastrada com sucesso!";
-                        this.clearForm();
-                        this.componentUpdate+=1;
-                    }).catch(error =>{
-                        this.msg_color ="alert alert-danger";
-                        this.msg = "Erro ao cadastrar";
-                    }).finally(() => {
-                        this.disabled = 0;
-                    })
+                if(!this.formValidate()){
+                    axios.post(process.env.MIX_APP_URL+"/account",this.user,{ headers: {'Authorization': "Bearer "+window.api_token}})
+                        .then(response => {
+                            this.msg_color ="alert alert-success";
+                            this.msg = "Conta cadastrada com sucesso!";
+                            this.clearForm();
+                            this.componentUpdate+=1;
+                        }).catch(error =>{
+                            this.msg_color ="alert alert-danger";
+                            this.msg = "Erro ao cadastrar";
+                        }).finally(() => {
+                            this.disabled = 0;
+                        })
+                }else{
+                    this.msg_color ="alert alert-warning";
+                    this.msg = this.formValidate();
+                    this.disabled = 0;
+                }
             },
             getBanks(){
                 axios.get(process.env.MIX_APP_URL+"/bank",{ headers: {'Authorization': "Bearer "+window.api_token}})
@@ -79,6 +83,22 @@
                     }).catch(error =>{
                         console.log(error);
                     })
+            },
+            formValidate(){
+                let msg_error = '';
+                if(this.user.name == ''){
+                    msg_error+="Nome é obrigatório <br>";
+                }
+                if(this.user.email == ''){
+                    msg_error+="E-mail é obrigatório <br>";
+                }
+                if(this.user.password == ''){
+                    msg_error+="Senha é obrigatório <br>";
+                }
+                if(this.user.bank_id == ''){
+                    msg_error+="Selecionar Banco <br>";
+                }
+                return msg_error;
             },
             clearForm(){
                 this.user.name = '';

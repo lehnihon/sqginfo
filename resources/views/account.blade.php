@@ -1,10 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.appb')
 
 @section('content')
 
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-10">
+        <div class="col-11">
             <account></account>
         </div>
     </div>

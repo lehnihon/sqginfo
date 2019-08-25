@@ -51,27 +51,27 @@ class TransactionController extends Controller
         $transaction->user_id = $request->user_id;
         if($request->status == 'P'){
             $amount = $user->amount-$request->value;
-            $transaction->type == 'D';
+            $transaction->type ='D';
             $transaction->amount_before = $user->amount;
             $transaction->amount_after = $amount;
             $user->amount = $amount;
             $user->save();
         }elseif($request->status == 'R'){
             $amount = $user->amount+$request->value;
-            $transaction->type == 'R';
+            $transaction->type = 'R';
             $transaction->amount_before = $user->amount;
             $transaction->amount_after = $amount;
             $user->amount = $amount;
             $user->save();
         }else{
-            $request->type == '';
+            $transaction->type = '';
         }
         $transaction->save();
     }
 
     public function show()
     {
-        $transaction = Transaction::orderBy('id', 'desc')->get();
+        $transaction = Transaction::with('user')->orderBy('id', 'desc')->get();
         return response()->json($transaction);
     }
 
@@ -92,20 +92,20 @@ class TransactionController extends Controller
         $transaction->user_id = $request->user_id;
         if($request->status == 'P'){
             $amount = $user->amount-$request->value;
-            $transaction->type == 'D';
+            $transaction->type = 'D';
             $transaction->amount_before = $user->amount;
             $transaction->amount_after = $amount;
             $user->amount = $amount;
             $user->save();
         }elseif($request->status == 'R'){
             $amount = $user->amount+$request->value;
-            $transaction->type == 'R';
+            $transaction->type = 'R';
             $transaction->amount_before = $user->amount;
             $transaction->amount_after = $amount;
             $user->amount = $amount;
             $user->save();
         }else{
-            $request->type == '';
+            $$transaction->type == '';
         }
         $transaction->save();
     }

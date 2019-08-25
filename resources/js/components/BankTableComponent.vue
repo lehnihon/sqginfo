@@ -1,6 +1,6 @@
 <template>
     <div class="card my-2">
-        <div class="card-header">Contas</div>
+        <div class="card-header">Bancos</div>
 
         <div class="card-body">
             <div class="row">
@@ -10,18 +10,14 @@
                             <tr>
                                 <th scope="col">#</th>
                                 <th scope="col">Nome</th>
-                                <th scope="col">E-mail</th>
-                                <th scope="col">Saldo</th>
                                 <th scope="col">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="user in users" v-bind:key="user.id">
-                                <th scope="row">{{user.id}}</th>
-                                <td>{{user.name}}</td>
-                                <td>{{user.email}}</td>
-                                <td>R${{formatPrice(user.amount)}}</td>
-                                <td><button class="btn" @click="destroy(user.id)">Deletar</button></td>
+                            <tr v-for="bank in banks" v-bind:key="bank.id">
+                                <th scope="row">{{bank.id}}</th>
+                                <td>{{bank.name}}</td>
+                                <td><button class="btn" @click="destroy(bank.id)">Deletar</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -36,23 +32,23 @@
 
     export default {
         data: () => ({
-            users:[]
+            banks:[]
         }),
         methods: {
             destroy(id){
                 if(confirm("Tem certeza que quer deletar?")){
-                    axios.delete(process.env.MIX_APP_URL+"/account/"+id,{ headers: {'Authorization': "Bearer "+window.api_token}})
+                    axios.delete(process.env.MIX_APP_URL+"/bank/"+id,{ headers: {'Authorization': "Bearer "+window.api_token}})
                         .then(response => {
-                            this.getUsers();
+                            this.getBanks();
                         }).catch(error =>{
                         }).finally(() => {
                         })
                 }
             },
-            getUsers(){
-                axios.get(process.env.MIX_APP_URL+"/account",{ headers: {'Authorization': "Bearer "+window.api_token}})
+            getBanks(){
+                axios.get(process.env.MIX_APP_URL+"/bank",{ headers: {'Authorization': "Bearer "+window.api_token}})
                     .then(response => {
-                        this.users = response.data
+                        this.banks = response.data
                     }).catch(error =>{
                         console.log(error)
                     })
@@ -63,7 +59,7 @@
             }
         },
         mounted(){
-            this.getUsers()
+            this.getBanks()
         }
     }
 </script>
